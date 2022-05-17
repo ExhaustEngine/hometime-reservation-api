@@ -28,25 +28,27 @@ To add a third payload structure, we just need to look for the file `services/pa
 e.g. sample payload:
 ```
 {
-  "person": {
-    "name": "Jasper"
+  "reservation": {
+    "code": {
+      "value": "XX09678113"
+    }
   }
 }
 ```
 
 Sample model:
 ```
-Person(name: string)
+Reservation(source_reservation_code: string)
 ```
 
 To map the values with our db attributes, we just need to add this constant under `services/parser.rb`
 ```
-PERSON_PAYLOAD = {
-  name: [:person, :name]
+THIRD_RESERVATION_PAYLOAD = {
+  source_reservation_code: [:code, :value]
 }
 ```
 
 Then append it under the `REGISTERED_MAPPINGS` constant.
 ```
-REGISTERED_MAPPINGS = [Parser::FIRST_PAYLOAD, Parser::SECOND_PAYLOAD, Parser::PERSON_PAYLOAD].freeze
+REGISTERED_MAPPINGS = [Parser::FIRST_PAYLOAD, Parser::SECOND_PAYLOAD, Parser::THIRD_RESERVATION_PAYLOAD].freeze
 ```
