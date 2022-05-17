@@ -21,6 +21,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_17_075754) do
     t.text "phone_numbers"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["email"], name: "index_guests_on_email", unique: true
   end
 
   create_table "reservations", force: :cascade do |t|
@@ -41,6 +42,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_05_17_075754) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["guest_id"], name: "index_reservations_on_guest_id"
+    t.index ["source_reservation_code"], name: "index_reservations_on_source_reservation_code", unique: true
   end
 
 end

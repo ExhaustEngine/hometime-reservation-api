@@ -2,7 +2,7 @@ class CreateReservations < ActiveRecord::Migration[7.0]
   def change
     create_table :reservations do |t|
       t.belongs_to :guest
-      t.string :source_reservation_code, unique: true
+      t.string :source_reservation_code
       t.datetime :start_date
       t.datetime :end_date
       t.integer :nights
@@ -17,5 +17,7 @@ class CreateReservations < ActiveRecord::Migration[7.0]
       t.float :total_price
       t.timestamps
     end
+
+    add_index :reservations, :source_reservation_code, unique: true
   end
 end

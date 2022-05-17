@@ -7,7 +7,7 @@ module Parser
       phone_numbers: [:guest, :phone]
     },
     reservation: {
-      code: :reservation_code,
+      source_reservation_code: :reservation_code,
       start_date: :start_date,
       end_date: :end_date,
       nights: :nights,
@@ -31,7 +31,7 @@ module Parser
       phone_numbers: [:reservation, :guest_phone_numbers]
     },
     reservation: {
-      code: [:reservation, :code],
+      source_reservation_code: [:reservation, :code],
       start_date: [:reservation, :start_date],
       end_date: [:reservation, :end_date],
       nights: [:reservation, :nights],
