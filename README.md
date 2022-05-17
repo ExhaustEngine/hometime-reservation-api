@@ -51,7 +51,7 @@ Guest(first_name: string, last_name: string, email: string)
 Reservation(source_reservation_code: string)
 ```
 
-To map the values with our db attributes, we just need to add this constant under `services/parser.rb`
+To map the payload properties with our db attributes, we just need to add this constant under `services/parser.rb`
 ```
 THIRD_RESERVATION_PAYLOAD = {
   reservation: {
