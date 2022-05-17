@@ -7,6 +7,7 @@ class ReservationsController < ApplicationController
 
     guest.save!
     reservation.save!
+
     render json: ReservationBlueprint.render(reservation), status: :ok
   end
 
