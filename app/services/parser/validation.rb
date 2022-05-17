@@ -1,19 +1,13 @@
 module Parser
   module Validation
     class << self
-      def get_and_validate_matched_mapping!(payload:)
-        mapping = Parser::REGISTERED_MAPPINGS.find { |payload_mapping|
-          matched_payload_mapping?(payload_mapping: payload_mapping)
+      def get_and_validate_matched_mapping(payload:)
+        Parser::REGISTERED_MAPPINGS.find { |payload_mapping|
+          matched_payload_mapping?(payload: payload, payload_mapping: payload_mapping)
         }
-
-        if mapping.nil?
-          # raise Errors::UnprocessableEntity, "Payload is not valid. Please contact the app admin to register payload structure."
-        end
-
-        mapping
       end
 
-      def matched_payload_mapping?(payload_mapping:)
+      def matched_payload_mapping?(payload:, payload_mapping:)
         guest_mappings       = payload_mapping[:guest]
         reservation_mappings = payload_mapping[:reservation]
 
