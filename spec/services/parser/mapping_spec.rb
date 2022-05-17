@@ -117,7 +117,7 @@ RSpec.describe Parser::Mapping do
         }
       }
 
-      fit 'should return the guest and reservation attributes' do
+      it 'should return the guest and reservation attributes' do
         expect(subject).to eq(
           [expected_guest_attributes, expected_reservation_attributes]
         )
