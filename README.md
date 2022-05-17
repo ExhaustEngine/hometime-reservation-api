@@ -1,25 +1,52 @@
-# README
+# API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Provides the backend for the reservation endpoint
 
-Things you may want to cover:
+## 
 
-* Ruby version
+## Prerequisites
+- Postgresql on local
 
-* System dependencies
+## Setup
 
-* Configuration
+1. Install gems `bundle install`
 
-* Database creation
+2. Setup RSpec `rails g rspec:install`
 
-* Database initialization
+3. Setup DB `rails db:setup db:migrate`
 
-* How to run the test suite
+## RSpec
 
-* Services (job queues, cache servers, search engines, etc.)
+To run tests: `bundle exec rspec` 
 
-* Deployment instructions
+## Adding a payload structure
 
-* ...
-<!-- TODO: ADD README -->
+Currently there are two payload structures provided in the test.
+
+To add a third payload structure, we just need to look for the file `services/parser.rb` and add a payload constant to map out the values of the payload vs the attributes of our models.
+
+e.g. sample payload:
+```
+{
+  "person": {
+    "name": "Jasper"
+  }
+}
+```
+
+Sample model:
+```
+Person(name: string)
+```
+
+To map the values with our db attributes, we just need to add this constant under `services/parser.rb`
+```
+PERSON_PAYLOAD = {
+  name: [:person, :name]
+}
+```
+
+Then append it under the `REGISTERED_MAPPINGS` constant.
+```
+REGISTERED_MAPPINGS = [Parser::FIRST_PAYLOAD, Parser::SECOND_PAYLOAD, Parser::PERSON_PAYLOAD].freeze
+```
