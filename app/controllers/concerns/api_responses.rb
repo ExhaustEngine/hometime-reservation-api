@@ -15,5 +15,6 @@ module ApiResponses
 
   def self.included(base)
     base.rescue_from Errors::UnprocessableEntity, with: :unprocessable
+    base.rescue_from ActiveRecord::RecordInvalid, with: :unprocessable
   end
 end
