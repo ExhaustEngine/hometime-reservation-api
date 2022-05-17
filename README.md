@@ -45,8 +45,9 @@ e.g. sample payload:
 }
 ```
 
-Sample model:
+Sample models:
 ```
+Guest(first_name: string, last_name: string, email: string)
 Reservation(source_reservation_code: string)
 ```
 
