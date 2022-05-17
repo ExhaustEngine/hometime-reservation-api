@@ -4,31 +4,31 @@ RSpec.describe "Reservations", type: :request do
   describe "POST /create" do
     subject { post "/reservations", params: payload }
 
-    context "for FIRST_PAYLOAD" do
-      let(:payload) {
-        {
-          guest: {
-            first_name: "Wayne",
-            last_name: "Woodbridge",
-            phone: "639123456789",
-            email: "wayne_woodbridge@bnb.com"
-          },
-          reservation_code: "YYY12345678",
-          start_date: "2021-04-14",
-          end_date: "2021-04-18",
-          nights: 4,
-          guests: 4,
-          adults: 2,
-          children: 2,
-          infants: 0,
-          status: "accepted",
-          currency: "AUD",
-          payout_price: "4200.00",
-          security_price: "500",
-          total_price: "4700.00"
-        }
+    let(:payload) {
+      {
+        guest: {
+          first_name: "Wayne",
+          last_name: "Woodbridge",
+          phone: "639123456789",
+          email: "wayne_woodbridge@bnb.com"
+        },
+        reservation_code: "YYY12345678",
+        start_date: "2021-04-14",
+        end_date: "2021-04-18",
+        nights: 4,
+        guests: 4,
+        adults: 2,
+        children: 2,
+        infants: 0,
+        status: "accepted",
+        currency: "AUD",
+        payout_price: "4200.00",
+        security_price: "500",
+        total_price: "4700.00"
       }
+    }
 
+    context "for FIRST_PAYLOAD" do
       it 'is expected to create the guest and reservation record' do
         expect { subject }.to change { Guest.all.count }.from(0).to(1)
           .and change { Reservation.all.count }.from(0).to(1)
@@ -209,6 +209,101 @@ RSpec.describe "Reservations", type: :request do
 
         parsed_body = JSON.parse(response.body)
         expect(parsed_body['error']).to eq("Payload is invalid. Please contact the admin of this API.")
+      end
+    end
+
+    context "when guest already exists" do
+      let!(:existing_guest) { create(:guest, email: "wayne_woodbridge@bnb.com") }
+
+      it 'should create a new reservation and update guest details' do
+        expect { subject }.to not_change { Guest.all.count }.from(1)
+          .and change { Reservation.all.count }.from(0).to(1)
+
+        expect(response).to have_http_status(:ok)
+
+        guest = Guest.first
+        expect(guest).to have_attributes(
+          email: "wayne_woodbridge@bnb.com",
+          first_name: "Wayne",
+          last_name: "Woodbridge",
+          phone_numbers: "639123456789",
+        )
+        expect(Reservation.first).to have_attributes(
+          source_reservation_code: "YYY12345678",
+          guest_id: guest.id,
+          start_date: be_within(1.day).of(DateTime.parse("2021-04-14")),
+          end_date: be_within(1.day).of(DateTime.parse("2021-04-18")),
+          nights: 4,
+          guests: 4,
+          adults: 2,
+          children: 2,
+          infants: 0,
+          status: "accepted",
+          currency: "AUD",
+          payout_price: 4200.00,
+          security_price: 500,
+          total_price: 4700.00
+        )
+      end
+    end
+
+    context "when reservation already exists" do
+      let!(:existing_guest) { create(:guest, email: "wayne_woodbridge@bnb.com") }
+      let!(:existing_reservation) { create(:reservation, source_reservation_code: "SAMPLE_CODE", guest: existing_guest) }
+
+      let(:payload) {
+        {
+          guest: {
+            first_name: "Wayne",
+            last_name: "Woodbridge",
+            phone: "639123456789",
+            email: "wayne_woodbridge@bnb.com"
+          },
+          reservation_code: "SAMPLE_CODE",
+          start_date: "2021-04-14",
+          end_date: "2021-04-18",
+          nights: 4,
+          guests: 4,
+          adults: 2,
+          children: 2,
+          infants: 0,
+          status: "accepted",
+          currency: "AUD",
+          payout_price: "4200.00",
+          security_price: "500",
+          total_price: "4700.00"
+        }
+      }
+
+      it 'should just update the reservation' do
+        expect { subject }.to not_change { Guest.all.count }.from(1)
+          .and not_change { Reservation.all.count }.from(1)
+
+        expect(response).to have_http_status(:ok)
+
+        guest = Guest.first
+        expect(guest).to have_attributes(
+          email: "wayne_woodbridge@bnb.com",
+          first_name: "Wayne",
+          last_name: "Woodbridge",
+          phone_numbers: "639123456789",
+        )
+        expect(Reservation.first).to have_attributes(
+          source_reservation_code: "SAMPLE_CODE",
+          guest_id: guest.id,
+          start_date: be_within(1.day).of(DateTime.parse("2021-04-14")),
+          end_date: be_within(1.day).of(DateTime.parse("2021-04-18")),
+          nights: 4,
+          guests: 4,
+          adults: 2,
+          children: 2,
+          infants: 0,
+          status: "accepted",
+          currency: "AUD",
+          payout_price: 4200.00,
+          security_price: 500,
+          total_price: 4700.00
+        )
       end
     end
   end
