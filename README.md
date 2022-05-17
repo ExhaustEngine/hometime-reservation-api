@@ -5,7 +5,7 @@ Provides the backend for the reservation endpoint
 ## 
 
 ## Prerequisites
-- Postgresql on local
+- Postgresql on local. See: https://www.postgresql.org/download/
 
 ## Setup
 
